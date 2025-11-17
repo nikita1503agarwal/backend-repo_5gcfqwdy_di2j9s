@@ -11,18 +11,17 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 
-# Example schemas (replace with your own):
-
+# Example schemas (retain for reference)
 class User(BaseModel):
     """
     Users collection schema
     Collection name: "user" (lowercase of class name)
     """
     name: str = Field(..., description="Full name")
-    email: str = Field(..., description="Email address")
+    email: EmailStr = Field(..., description="Email address")
     address: str = Field(..., description="Address")
     age: Optional[int] = Field(None, ge=0, le=120, description="Age in years")
     is_active: bool = Field(True, description="Whether user is active")
@@ -38,11 +37,17 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
-
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+# Booking schema for ECU remapping appointments
+class Booking(BaseModel):
+    """
+    ECU Remap Booking schema
+    Collection name: "booking"
+    """
+    name: str = Field(..., min_length=2, description="Customer full name")
+    email: EmailStr = Field(..., description="Customer email")
+    phone: str = Field(..., min_length=6, max_length=20, description="Contact phone number")
+    vehicle: str = Field(..., description="Vehicle make & model")
+    registration: str = Field(..., description="Vehicle registration/plate")
+    date: str = Field(..., description="Booking date in YYYY-MM-DD format")
+    time: str = Field(..., description="Booking time label, e.g., 09:00")
+    notes: Optional[str] = Field(None, description="Optional notes")
